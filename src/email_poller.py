@@ -10,20 +10,20 @@ import json
 import time
 import os
 
-load_dotenv('../.env')
+load_dotenv()
 
-# === Настройки подключения ===
 IMAP_HOST = os.getenv("IMAP_HOST")
 IMAP_USER = os.getenv("IMAP_USER") # Ваш email
-IMAP_PASS = os.getenv("IMAP_PASS")    # Пароль приложения (не основной пароль!)
+IMAP_PASS = os.getenv("IMAP_PASSWORD")    # Пароль приложения (не основной пароль!)
 
 SMTP_HOST = os.getenv("SMTP_HOST")       # Хост SMTP
 SMTP_USER = IMAP_USER
 SMTP_PASS = IMAP_PASS
 
+
 # Yandex REST API для генерации ответа
-REST_API_URL = os.getenv("REST_API_URL")
-FOLDER_ID = os.getenv("FOLDER_ID")         # Обязательно для Yandex REST API
+#REST_API_URL = os.getenv("REST_API_URL")
+#FOLDER_ID = os.getenv("FOLDER_ID")         # Обязательно для Yandex REST API
 
 # Получаем токен из метаданных
 def get_iam_token():
@@ -158,10 +158,8 @@ def process_unread_emails():
     mail.logout()
     smtp_server.quit()
 
-def handler(event, context):
-    from lockbox import get_lockbox_secret
-    IMAP_PASS = get_lockbox_secret(os.getenv("IMAP_PASS"), 'password')
-    SMTP_PASS = IMAP_PASS
+# === Запуск в Yandex cloud function ===
+def handle(event, context):
     process_unread_emails()
     return {
         'statusCode': 200,
